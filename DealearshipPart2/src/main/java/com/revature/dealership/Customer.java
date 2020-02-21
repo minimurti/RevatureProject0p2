@@ -34,7 +34,7 @@ public class Customer extends User {
 	@Override
 	public boolean PromptUser() {
 		
-		System.out.println("What would you like to do?");
+		System.out.println("\nWhat would you like to do?");
 		System.out.println("1. Make an Offer?");
 		System.out.println("2. List all cars on lot?");
 		System.out.println("3. List your cars");

@@ -120,12 +120,13 @@ public class Employee extends User {
 		int j = Driver.input.nextInt();
 		User Offereee = Driver.cfm.readCarList().get(i-1).getOfferUser(j-1);
 		
-		Driver.cfm.AcceptOffer(i -1 , Offereee);
-		
-		Driver.ufm.AddCartoUser(Offereee, Driver.cfm.readCarList().get(i-1));
-		
+		if(Driver.cfm.AcceptOffer(i -1 , Offereee)) {
+			Driver.ufm.AddCartoUser(Offereee, Driver.cfm.readCarList().get(i-1));
+			
+			System.out.println("Offer Accepted");
 
-		Driver.log.info("Employee User " + this.getName() + " accepted an offer from " + Offereee.getName());
+			Driver.log.info("Employee User " + this.getName() + " accepted an offer from " + Offereee.getName());
+		}
 //		
 		
 		
@@ -215,7 +216,7 @@ public class Employee extends User {
 		System.out.println("Select a Car by Number");
 		int i = Driver.input.nextInt();
 		
-		RemoveCarTest(i);
+		RemoveCarTest(i-1);
 	
 		
 	}
