@@ -1,5 +1,10 @@
 package com.revature.dealership;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 //import org.apache.log4j.Logger;
 import java.util.InputMismatchException;
@@ -16,25 +21,25 @@ public class Customer extends User {
 	 */
 	private static final long serialVersionUID = 1285296186529033766L;
 
-	LinkedList<Car> Cars;
+	//LinkedList<Car> Cars;
 	
 	public Customer(String name, String pwd) {
 		super(name, pwd, "Customer");
-		Cars = new LinkedList<Car>();
+		//Cars = new LinkedList<Car>();
 		// TODO Auto-generated constructor stub
 		
 	}
 	
 	
-	public void addCar(Car carInput) {
-		Cars.add(carInput);
-	}
+//	public void addCar(Car carInput) {
+//		Cars.add(carInput);
+//	}
 	
 
 	@Override
 	public boolean PromptUser() {
 		
-		System.out.println("\nWhat would you like to do?");
+		System.out.println("\n\nWhat would you like to do?");
 		System.out.println("1. Make an Offer?");
 		System.out.println("2. List all cars on lot?");
 		System.out.println("3. List your cars");
@@ -97,46 +102,17 @@ public class Customer extends User {
 	
 	
 	
-	private String listPayments() {
-		listMyCars();
-		System.out.println("Choose Car By Number: ");
-		int i = Driver.input.nextInt();
-		return listPaymentsIn(i-1);
+	private void listPayments() {
+		System.out.println( listPaymentsIn());
 		
 	}
 
 	
-	public String listPaymentsIn(int i) {
-	
+	public String listPaymentsIn() {
+
 		
-		DecimalFormat numberFormat = new DecimalFormat("#.00");
-		try {
-			System.out.println("Total of $" + numberFormat.format(Cars.get(i).getOffer(0).getAmount()) + ", with 60 remaining payments of $" + numberFormat.format(Cars.get(i).getOffer(0).getAmount()/60) + " per month, over the course of 5 years 0% APR.");
-			return "Total of $" + numberFormat.format(Cars.get(i).getOffer(0).getAmount()) + ", with 60 remaining payments of $" + numberFormat.format(Cars.get(i).getOffer(0).getAmount()/60) + " per month, over the course of 5 years 0% APR.";
-			
-		}catch(InputMismatchException e) {
-			Driver.log.warn("Username " + this.getName() + " caused error", e);
-			
-				//Log.warn("Please Enter Valid Input");
-				System.out.println("Please Enter Valid Input");
-				
-		}catch(IndexOutOfBoundsException e) {
-			Driver.log.warn("Username " + this.getName() + " caused error", e);
-			
-				//Log.warn("Please Enter Valid Range");
-				System.out.println("Please Enter Valid Range");
-		}catch(IllegalAccessError e) {
-			Driver.log.warn("Username " + this.getName() + " caused error", e);
-			
-				//Log.warn("Please Enter Valid Input");
-				System.out.println("Please Enter Valid Input");
-		}
-		catch(Exception e) {
-			Driver.log.warn("Username " + this.getName() + " caused error", e);
-			
-				
-		}
-		return "Error";
+		return Driver.cfm.sysoutOfferByUser(this);
+
 
 	}
 
@@ -145,49 +121,34 @@ public class Customer extends User {
 		listCars();
 		System.out.println("Choose Car By Number: ");
 		int i = Driver.input.nextInt();
-		Car carOfOffer = Driver.cfm.readCarList().get(i-1);
+		//Car carOfOffer = Driver.cfm.readCarList().get(i);
 		
 		System.out.println("Enter Amount: $");
 		double amountOfOffer = Driver.input.nextDouble();
 		
 		
-		
-		
-		if(Driver.cfm.AddOffer(i - 1, new Offer(this, carOfOffer, amountOfOffer))) {
-			System.out.println("Offer recieved!");
-		}else
-			System.out.println("Invalid Input!");
-		
-		
-		Driver.log.info("User " + this.getName() + " made an offer of $" + amountOfOffer + carOfOffer);
+		MakeOfferTest(i,amountOfOffer);
+
 	}
 	
 	
 	public void MakeOfferTest(int i, double amountOfOffer) {
-		// TODO Auto-generated method stub
-		listCars();
-		System.out.println("Choose Car By Number: ");
-		//int i = Driver.input.nextInt();
-		Car carOfOffer = Driver.cfm.readCarList().get(i-1);
+
 		
-		System.out.println("Enter Amount: $");
-		//double amountOfOffer = Driver.input.nextDouble();
-		
-		
-		
-		
-		if(Driver.cfm.AddOffer(i - 1, new Offer(this, carOfOffer, amountOfOffer))) {
+		if(Driver.cfm.AddOffer(i, amountOfOffer, this.getName())) {
 			System.out.println("Offer recieved!");
 		}else
 			System.out.println("Invalid Input!");
 		
 		
+		Driver.log.info("User " + this.getName() + " made an offer of $" + amountOfOffer);
+		
 		
 	}
 
-	public String listCarsTest() {
-		return listCars();
-	}
+//	public String listCarsTest() {
+//		return listCars();
+//	}
 	
 	private String listCars() {
 		return Driver.cfm.sysoutCarList();
@@ -195,21 +156,14 @@ public class Customer extends User {
 	
 
 
-	public String listMyCars() {
-		Iterator<Car> i = Cars.iterator();
-		int j = 0;
-		Car currentCar = null;
-		String ret = "";
-		while(i.hasNext()) {
-			 j++;
-			 currentCar = i.next();
-			 System.out.println(j + ". " + currentCar);
-			 ret += j + ". " + currentCar + "\n";
-			 
-		}
-		return  ret;
+	public void listMyCars() {
+
+		System.out.println(listMyCarTest());
 	}
 	
+	public String listMyCarTest() {
+		return Driver.cfm.sysoutCarByUser(this);
+	}
 	
 	
 	

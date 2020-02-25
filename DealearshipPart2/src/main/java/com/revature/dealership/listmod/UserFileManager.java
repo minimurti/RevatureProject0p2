@@ -1,381 +1,239 @@
 package com.revature.dealership.listmod;
-import com.revature.dealership.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import com.revature.dealership.Customer;
+import com.revature.dealership.Driver;
+import com.revature.dealership.User;
 import com.revature.dealership.carMod.Employee;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.LinkedList;
-import java.util.ListIterator;
-
-
 
 public class UserFileManager {
 	
-	private LinkedList<User> userList;
 
+	private static String url = "jdbc:postgresql://localhost:5432/postgres";
+	private static String username = "postgres";
+	private static String password = "postgres";
+	
+	
+	
+	
+
+
+
+
+	
 	public UserFileManager() {
-		
-		checkUserFile();
-		
-		userList = readUserList();
-		// TODO Auto-generated constructor stub
+		CheckForAdmin();
 	}
+//	private LinkedList<User> userList;
 
+
+//	
+//	protected void deleteRecent() {
+//		userList.removeLast();
+//		writeUserList();
+//	}
 	
-	protected void deleteRecent() {
-		userList.removeLast();
-		writeUserList();
-	}
-	
-	
-	public LinkedList<User> getUserList() {
-		return userList;
-	}
-	
-	private void writeUserList() {
-		String filename;
-		filename = "users.dat";
+
+	public void CheckForAdmin() {
 		
-		
-		
-		FileOutputStream fos = null;
-		ObjectOutputStream oos = null;
-		try {
-			fos = new FileOutputStream(filename);
-			oos = new ObjectOutputStream(fos);
-			oos.writeObject(userList);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				oos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
-				fos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		
-		
-	}
-	
-	
-	
-	public boolean CheckNameAvailibility(String username) {
-
-		ListIterator<User> listIterator = userList.listIterator();
-		while (listIterator.hasNext()) {
-			
-			if(listIterator.next().getName().equals(username)) {
-				return false;
-			}
-			
-		}
-		
-		return true;
-	}
-	
-	
-	public void AddCartoUser(User input, Car carInput) {
-		ListIterator<User> listIterator = userList.listIterator();
-		User current = null;
-		while (listIterator.hasNext()) {
-			current = listIterator.next();
-			if( current.equals(input)) {
-				((Customer) current).addCar(carInput);
-				writeUserList();
-				return;
-			}
-			
-		}
-
-		
-	}
-	
-	
-	
-	
-	
-
-
-
-
-
-
-	
-	
-	
-	public User checkUser(String username, String password) {
-
-		
-		boolean first = true;
-		
-		ListIterator<User> listIterator = userList.listIterator();
-		while (listIterator.hasNext()) {
-			
-			User check = listIterator.next();
-			
-			
-			
-			if(check.equals(new Customer(username, password))) {
-				return check;
-			}
-			
-			
-			if(check.equals(new Employee(username, password))) {
-				return check;
-			}
-			
-			if(first && check.equals(new Admin(password)) && username.equals(new String("admin")) ) {///add check for admin later
-				return check;
-			}
-			else {
-				first = false;
-			}
-		
-		
-			
-		}
-		
-		return null;
-		
-	}
-	
-	
-
-
-
-
-
-
-	@SuppressWarnings("unchecked")
-	public LinkedList<User> readUserList() {
-		
-		String filename = "users.dat";
-
-
-		FileInputStream fin = null;
-		ObjectInputStream ois = null;
-
-		try {
-
-			fin = new FileInputStream(filename);
-			ois = new ObjectInputStream(fin);
-
-			this.userList = (LinkedList<User>) ois.readObject();
-
-			if(userList.isEmpty()) {
-				System.out.println("File Corruption Detected. Delete user.dat file and restart");
-				return null;
-			}
-			
-			fin.close();
-			ois.close();
-			
-			return userList;
-			
-
-		} catch (Exception ex) {
-			//Scanner scan = new Scanner(System.in);
-			
-			System.out.println("No List detected! ");
-			System.out.println("Create password for accountname \"admin\": ");
-			
-			String password = Driver.input.next();
-	
-			
-			if(password.isEmpty()) {
-				ex.printStackTrace();
-			}
-			else {
-				
-				initializeUserList(new Admin(password));
-			}
-			
-
-			
-
-			
-		} finally {
-
-			if (fin != null) {
-				try {
-					fin.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
-			if (ois != null) {
-				try {
-					ois.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
-		}
-
-		
-		return null;
-	
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@SuppressWarnings("unchecked")
-	public void checkUserFile() {
-		/////////////////////CHECK Status of user list file
-		String filename = "users.dat";
-
-
-		FileInputStream fin = null;
-		ObjectInputStream ois = null;
-
-		try {
-
-			fin = new FileInputStream(filename);
-			ois = new ObjectInputStream(fin);
-
-		
-			this.userList = (LinkedList<User>) ois.readObject();
-
-			if(userList.isEmpty()) {
-				System.out.println("File Corruption Detected. Delete User.date file and restart");
-				return;
-			}
-			
-			fin.close();
-			ois.close();
-			
-			
-			
-
-		} catch (Exception ex) {
-			//Scanner exinput = new Scanner(System.in);
-			
+		if(CheckNameAvailibility("admin")) {
 			System.out.println("No List detected! ");
 			System.out.println("Create password for accountname \"admin\" :");
 			
 			String password = Driver.input.next();
-	
+			CreateADMIN(password);
+		}
+		
 
+	}
+	
+	
+	public boolean CheckNameAvailibility(String usernameIN) {
+
+		try(Connection conn = DriverManager.getConnection(url, username, password)){
+			PreparedStatement ps = conn.prepareStatement("select * from eluser where username = ?;");
 			
 			
-			if(password.isEmpty()) {
-				ex.printStackTrace();
-			}
+			ps.setString(1, usernameIN);
+			ResultSet rs = ps.executeQuery();
+			
+			
+			
+			if(rs.next()) {
+				return false;
+				}
 			else {
-				initializeUserList(new Admin(password));
+				return true;
 			}
 			
-		} finally {
-
-			if (fin != null) {
-				try {
-					fin.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
-			if (ois != null) {
-				try {
-					ois.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return false;
 		}
-
-/////////////////////done with CHECK Status of user list file
 		
-		
-		
-
-		
-		
-		
-		
+	
 	}
 	
-	
-	
-	
-	public User CreateNewCustomerAccount(String username, String password) {
-		
-		userList.add(new Customer(username, password));
-		writeUserList();
-		return readUserList().getLast();
-		
-	}
+
+
+
+
 
 	
-	protected User CreateNewEmployeeAccount(String username, String password) {///should only be used by admin via shared package
+	
+	
+	public User checkUser(String usernameIN, String passwordIN) {
 
-		userList.add(new Employee(username, password));
-		writeUserList();
-		return readUserList().getLast();
-		
-	}
-	
-	
-	private void initializeUserList(Admin admin) {
-		
-		
-		String filename;
-		filename = "users.dat";
-		
-		
-		this.userList = new LinkedList<User>();
-		
-		userList.add(admin);
-		
-		
-		
-		FileOutputStream fos = null;
-		ObjectOutputStream oos = null;
-		try {
-			fos = new FileOutputStream(filename);
-			oos = new ObjectOutputStream(fos);
-			oos.writeObject(userList);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				oos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+		try(Connection conn = DriverManager.getConnection(url, username, password)){
+			PreparedStatement ps = conn.prepareStatement("select * from eluser where username = ? and pass = ?;");
+			
+			ps.setString(1, usernameIN);
+			ps.setString(2, passwordIN);
+			
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				int i = rs.getInt(3);
+				switch (i) {
+				case 1:
+					return new Customer(usernameIN, passwordIN);
+
+				case 2:
+					return new Employee(usernameIN, passwordIN);	
+					
+				case 3:
+					return new Admin(passwordIN);
+				
+					
+					
+
+				default:
+					break;
+				}
+				
+				
+				
+				
+				
+				}
+			else {
+				return null;
 			}
-			try {
-				fos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return null;
 		}
 		
 		
+		return null;
 		
 	}
+	
+	
+
+
+
+
+
+	
+	
+	
+	
+	public User CreateNewCustomerAccount(String usernameIN, String passwordIN) {
+		
+		
+		
+		
+		try(Connection conn = DriverManager.getConnection(url,username,password)) {
+			
+			PreparedStatement ps = conn.prepareStatement("insert into eluser values (?,?,1);");
+
+			ps.setString(1, usernameIN);
+			ps.setString(2, passwordIN);
+			
+//			
+			
+			ps.execute();
+			
+		} catch(SQLException e) {
+			System.out.println(e);
+			return null;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+		
+		return new Customer(usernameIN, passwordIN);
+		
+		
+	}
+
+	
+	protected User CreateNewEmployeeAccount(String usernameIN, String passwordIN) {
+		
+		
+		
+		
+		try(Connection conn = DriverManager.getConnection(url,username,password)) {
+			
+			PreparedStatement ps = conn.prepareStatement("insert into eluser values (?,?,2);");
+
+			ps.setString(1, usernameIN);
+			ps.setString(2, passwordIN);
+			
+//			
+			
+			ps.execute();
+			
+		} catch(SQLException e) {
+			System.out.println(e);
+			return null;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	
+		
+		return new Employee(usernameIN, passwordIN);
+	}
+	
+	private User CreateADMIN(String passwordIN) {
+		
+		
+		
+		
+		try(Connection conn = DriverManager.getConnection(url,username,password)) {
+			
+			PreparedStatement ps = conn.prepareStatement("insert into eluser values ('admin',?,3);");
+
+	
+			ps.setString(1, passwordIN);
+			
+//			
+			
+			ps.execute();
+			
+		} catch(SQLException e) {
+			System.out.println(e);
+			return null;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	
+		
+		return new Admin(passwordIN);
+	}
+	
+	
 	
 	
 	

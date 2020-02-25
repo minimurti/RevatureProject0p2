@@ -23,9 +23,12 @@ public class Car implements Serializable {
 	private boolean isAccepted = false;
 	
 	private double listPrice;
-	private LinkedList<Offer> offers;
+	//private LinkedList<Offer> offers;
 	
-
+	
+	private int id;
+	
+	
 	public Car(String make, String model, int year, String color, double listPrice) {
 		super();
 		this.make = make;
@@ -33,80 +36,93 @@ public class Car implements Serializable {
 		this.year = year;
 		this.color = color;
 		this.listPrice = listPrice;
-		offers = new LinkedList<Offer>();
+		this.id = 0;
+		//offers = new LinkedList<Offer>();
 	}
 	
-	public void AcceptOffer(User user){
-		this.isAccepted = true;
-		Iterator<Offer> i = offers.iterator();
-		Offer current = null;
-		while(i.hasNext()) {
-			   current = i.next();
-			   
-			   if(user == current.getOfferer()) {
-				   current.setAccepted(true);
-			   }
-			   else {
-				   i.remove();////removes (rejects the offer)
-			   }
-			   
-			   
-		}
-		
-		
+	
+	public Car(String make, String model, int year, String color, double listPrice, int id) {
+		super();
+		this.make = make;
+		this.model = model;
+		this.year = year;
+		this.color = color;
+		this.listPrice = listPrice;
+		this.id = id;
+		//offers = new LinkedList<Offer>();
 	}
 	
-	public void RejectOffer(int i ) {
-		
-		offers.remove(i);
-		
+//	public void AcceptOffer(User user){
+//		this.isAccepted = true;
 //		Iterator<Offer> i = offers.iterator();
-//
+//		Offer current = null;
 //		while(i.hasNext()) {
+//			   current = i.next();
 //			   
-//			   if(user == i.next().getOfferer()) {
+//			   if(user == current.getOfferer()) {
+//				   current.setAccepted(true);
+//			   }
+//			   else {
 //				   i.remove();////removes (rejects the offer)
 //			   }
 //			   
+//			   
 //		}
-	}
-	
-	public Offer getOffer(int i) {
-		return offers.get(i);
-	}
-
+//		
+//		
+//	}
+//	
+//	public void RejectOffer(int i ) {
+//		
+//		offers.remove(i);
+//		
+////		Iterator<Offer> i = offers.iterator();
+////
+////		while(i.hasNext()) {
+////			   
+////			   if(user == i.next().getOfferer()) {
+////				   i.remove();////removes (rejects the offer)
+////			   }
+////			   
+////		}
+//	}
+//	
+//	public Offer getOffer(int i) {
+//		return offers.get(i);
+//	}
+//
 	@Override
 	public String toString() {
-		return "Make=" + make + ", Model=" + model + ", Year=" + year + ", Color=" + color + ", List Price="
-				+ listPrice + " Number of Offers= " + offers.size();
+		return "Parking Spot: " + id + ", Make=" + make + ", Model=" + model + ", Year=" + year + ", Color=" + color + ", List Price="
+				+ listPrice;
 	}
-	
-	public void addOffer (Offer input) {
-		offers.add(input);
-	}
-	
-	
-	
-	public String PrintOffers() {
-		Iterator<Offer> i = offers.iterator();
-		int j = 0;
-		String ret = "";
-		Offer current;
-		while(i.hasNext()){
-			j++;
-			current = i.next();
-			System.out.println(j + ". " + current.toString());
-			ret += j + ". " + current.toString() + "\n";
-
-		}
-		System.out.println("\n ");
-		return ret;
-	}
-	
-	
-	public User getOfferUser(int i) {
-		return offers.get(i).getOfferer();
-	}
+//	
+//	public void addOffer (Offer input) {
+//		offers.add(input);
+//	}
+//	
+//	
+//	
+//	public String PrintOffers() {
+//		Iterator<Offer> i = offers.iterator();
+//		int j = 0;
+//		String ret = "";
+//		Offer current;
+//		while(i.hasNext()){
+//			j++;
+//			current = i.next();
+//			System.out.println(j + ". " + current.toString());
+//			ret += j + ". " + current.toString() + "\n";
+//
+//		}
+//		System.out.println("\n ");
+//		return ret;
+//	}
+//	
+//	
+//	public User getOfferUser(int i) {
+//		return offers.get(i).getOfferer();
+//	}
 
 	public boolean isAccepted() {
 		return isAccepted;
@@ -123,7 +139,7 @@ public class Car implements Serializable {
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((make == null) ? 0 : make.hashCode());
 		result = prime * result + ((model == null) ? 0 : model.hashCode());
-		result = prime * result + ((offers == null) ? 0 : offers.hashCode());
+		//result = prime * result + ((offers == null) ? 0 : offers.hashCode());
 		result = prime * result + year;
 		return result;
 	}
@@ -156,11 +172,11 @@ public class Car implements Serializable {
 				return false;
 		} else if (!model.equals(other.model))
 			return false;
-		if (offers == null) {
-			if (other.offers != null)
-				return false;
-		} else if (!offers.equals(other.offers))
-			return false;
+//		if (offers == null) {
+//			if (other.offers != null)
+//				return false;
+//		} else if (!offers.equals(other.offers))
+//			return false;
 		if (year != other.year)
 			return false;
 		return true;
@@ -182,6 +198,9 @@ public class Car implements Serializable {
 		return color;
 	}
 	
+	public double getListPrice() {
+		return this.listPrice;
+	}
 	
 	
 	

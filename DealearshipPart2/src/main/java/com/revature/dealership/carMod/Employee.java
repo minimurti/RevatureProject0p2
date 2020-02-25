@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 import com.revature.dealership.Car;
 import com.revature.dealership.Driver;
-import com.revature.dealership.Offer;
+//import com.revature.dealership.Offer;
 //import com.revature.dealership.Offer;
 import com.revature.dealership.User;
 
@@ -28,10 +28,10 @@ public class Employee extends User {
 	@Override
 	public boolean PromptUser() {
 		
-		System.out.println("Would you like to:");
+		System.out.println("\n\nWould you like to:");
 		System.out.println("1. Add a Car to the Lot?");
 		System.out.println("2. List all the Cars?");
-		System.out.println("3. List all offers?");
+		System.out.println("3. List all Active offers?");
 		System.out.println("4. Accept an offer?");
 		System.out.println("5. Reject an offer?");
 		System.out.println("6. Remove a Car to the Lot?");
@@ -91,19 +91,8 @@ public class Employee extends User {
 	}
 
 	public String ListAllPayments() {
-		// TODO Auto-generated method stub
-		LinkedList<Offer> out = Driver.cfm.getAcceptedOfferList();
-		Iterator<Offer> i = out.iterator();
-		String ret = "";
-		DecimalFormat numberFormat = new DecimalFormat("#.00");
-		Offer current = null;
-		while(i.hasNext()){
-			current = i.next();
-			System.out.println(current.getOfferer() + " owes a total of $" + numberFormat.format(current.getAmount()) + ", with 60 remaining payments of $" + numberFormat.format(current.getAmount()/60) + " per month, over the course of 5 years 0% APR, For their " + current.getCar() + "\n");
-			ret += current.getOfferer() + " owes a total of $" + numberFormat.format(current.getAmount()) + ", with 60 remaining payments of $" + numberFormat.format(current.getAmount()/60) + " per month, over the course of 5 years 0% APR, For their " + current.getCar() + "\n";	
-		}
-		
-		return ret;
+
+		return Driver.cfm.listAcceptedOffer();
 	}
 	
 	
@@ -113,53 +102,27 @@ public class Employee extends User {
 	private void AcceptOffer() {
 		listCars();
 		System.out.println("Select a Car by Number");
-		int i = Driver.input.nextInt();
+		int c = Driver.input.nextInt();
 		System.out.println("Choose offer by Number");
 		//list the offers on a car
-		Driver.cfm.readCarList().get(i-1).PrintOffers();
-		int j = Driver.input.nextInt();
-		User Offereee = Driver.cfm.readCarList().get(i-1).getOfferUser(j-1);
-		
-		if(Driver.cfm.AcceptOffer(i -1 , Offereee)) {
-			Driver.ufm.AddCartoUser(Offereee, Driver.cfm.readCarList().get(i-1));
-			
-			System.out.println("Offer Accepted");
+		Driver.cfm.sysoutOfferList();
+		int o = Driver.input.nextInt();
 
-			Driver.log.info("Employee User " + this.getName() + " accepted an offer from " + Offereee.getName());
-		}
-//		
-		
-		
-//		
-//		String username = Driver.input.next();
-//		
-//		Driver.cfm.readCarList().get(i).
-		
+		AcceptOfferTest(c,o);
+
 		
 	}
 	
 	
 	public void AcceptOfferTest(int i, int j) {
-		listCars();
-		System.out.println("Select a Car by Number");
-		//int i = Driver.input.nextInt();
-		System.out.println("Choose offer by Number");
-		//list the offers on a car
-		Driver.cfm.readCarList().get(i-1).PrintOffers();
-		//int j = Driver.input.nextInt();
-		User Offereee = Driver.cfm.readCarList().get(i-1).getOfferUser(j-1);
+
+
 		
-		Driver.cfm.AcceptOffer(i -1 , Offereee);
+		Driver.cfm.AcceptOffer(i,j);
+	
+		Driver.log.info("Employee User " + this.getName() + " Accepted offer ID: " + i);
 		
-		Driver.ufm.AddCartoUser(Offereee, Driver.cfm.readCarList().get(i-1));
-		
-		
-		
-		
-//		
-//		String username = Driver.input.next();
-//		
-//		Driver.cfm.readCarList().get(i).
+
 		
 		
 	}
@@ -167,17 +130,13 @@ public class Employee extends User {
 	
 	private void RejectOffer() {
 		listCars();
-		System.out.println("Select a Car by Number");
+		System.out.println("Select an Offer by Number");
 		int i = Driver.input.nextInt();
-		System.out.println("Choose offer by Number");
-		//list the offers on a car
-		Driver.cfm.readCarList().get(i-1).PrintOffers();
-		int j = Driver.input.nextInt();
 		//User Offereee = Driver.cfm.readCarList().get(i-1).getOfferUser(j-1);
 		
-		Driver.cfm.RejectOffer(i-1,j-1);
+		Driver.cfm.RejectOffer(i);
 	
-		Driver.log.info("Employee User " + this.getName() + " rejected an offer.");
+		Driver.log.info("Employee User " + this.getName() + " Accepted offer ID: " + i);
 //		
 //		String username = Driver.input.next();
 //		
@@ -216,7 +175,7 @@ public class Employee extends User {
 		System.out.println("Select a Car by Number");
 		int i = Driver.input.nextInt();
 		
-		RemoveCarTest(i-1);
+		RemoveCarTest(i);
 	
 		
 	}
@@ -224,28 +183,9 @@ public class Employee extends User {
 	
 	public void RemoveCarTest(int i) {
 //		
-		try {
+	
 		Driver.cfm.removeCar(i);
-		Driver.log.info("Employee User " + this.getName() + " removed a car from the lot.");
-		
-		}catch(InputMismatchException e) {
-			Driver.log.warn("Username " + this.getName() + " caused error", e);
-			
-				//Log.warn("Please Enter Valid Input");
-				System.out.println("Please Enter Valid Input");
-		}catch(IndexOutOfBoundsException e) {
-			Driver.log.warn("Username " + this.getName() + " caused error", e);
-			
-				//Log.warn("Please Enter Valid Range");
-				System.out.println("Please Enter Valid Range");
-		}catch(IllegalAccessError e) {
-			Driver.log.warn("Username " + this.getName() + " caused error", e);
-			
-				//Log.warn("Please Enter Valid Input");
-				System.out.println("Please Enter Valid Input");
-		}
-			
-		
+
 	}
 	
 	
