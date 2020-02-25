@@ -77,12 +77,13 @@ public String sysoutCarListAvalible() {
 	NumberFormat n = NumberFormat.getCurrencyInstance(Locale.US);
 	
 	try(Connection conn = DriverManager.getConnection(url, username, password)){
-		PreparedStatement ps = conn.prepareStatement("select c.spot, c.\"year\", make, model, listprice from car c join offer o on c.spot = o.car where o.status != 3;");
+		PreparedStatement ps = conn.prepareStatement("select c.spot, c.\"year\", make, model, listprice, o.status from car c left join offer o on c.spot = o.car;");
 		
 		
 		
 		ResultSet rs = ps.executeQuery();
 		while(rs.next()) {
+			if(rs.getInt(6) != 3)
 			ret += "Parking Spot #" + rs.getInt(1) + ": " + rs.getInt(2) + ", " + rs.getString(3)+ ", " + rs.getString(4) + ": " + n.format(5) + ".\n";
 		}
 	}catch(SQLException e) {
