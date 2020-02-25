@@ -150,15 +150,19 @@ public class Customer extends User {
 //		return listCars();
 //	}
 	
-	private String listCars() {
-		return Driver.cfm.sysoutCarList();
+	private String listCarsTest() {
+		return Driver.cfm.sysoutCarListAvalible();
 	}
 	
+	private void listCars() {
+		System.out.println(listCarsTest());
+	}
 
 
 	public void listMyCars() {
+		
 
-		System.out.println(listMyCarTest());
+		System.out.println("You own the following: \n " + listMyCarTest());
 	}
 	
 	public String listMyCarTest() {

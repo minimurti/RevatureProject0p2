@@ -71,6 +71,34 @@ public class CarFileManager {
 	}
 	
 	
+public String sysoutCarListAvalible() {
+		
+	String ret = "";
+	NumberFormat n = NumberFormat.getCurrencyInstance(Locale.US);
+	
+	try(Connection conn = DriverManager.getConnection(url, username, password)){
+		PreparedStatement ps = conn.prepareStatement("select c.spot, c.\"year\", make, model, listprice from car c join offer o on c.spot = o.car where o.status != 3;");
+		
+		
+		
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			ret += "Parking Spot #" + rs.getInt(1) + ": " + rs.getInt(2) + ", " + rs.getString(3)+ ", " + rs.getString(4) + ": " + n.format(5) + ".\n";
+		}
+	}catch(SQLException e) {
+		e.printStackTrace();
+	}
+	
+	
+	return ret;
+	
+	}
+
+	
+	
+	
+	
+	
 	public void sysoutOfferList() {//Pending
 		
 		try(Connection conn = DriverManager.getConnection(url, username, password)){
