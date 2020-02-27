@@ -99,13 +99,13 @@ public class Employee extends User {
 
 	
 
-	private void AcceptOffer() {
-		listCars();
+	private void AcceptOffer() {//tested by tester
+		System.out.println(Driver.cfm.sysoutCarListAvalible());
 		System.out.println("Select a Car by Number");
 		int c = Driver.input.nextInt();
 		System.out.println("Choose offer by Number");
 		//list the offers on a car
-		Driver.cfm.sysoutOfferList();
+		Driver.cfm.sysoutOfferListByCar(c);
 		int o = Driver.input.nextInt();
 
 		AcceptOfferTest(c,o);
@@ -114,13 +114,13 @@ public class Employee extends User {
 	}
 	
 	
-	public void AcceptOfferTest(int i, int j) {
+	public void AcceptOfferTest(int c, int o) {//tested
 
 
 		
-		Driver.cfm.AcceptOffer(i,j);
+		Driver.cfm.AcceptOffer(c,o);
 	
-		Driver.log.info("Employee User " + this.getName() + " Accepted offer ID: " + i);
+		Driver.log.info("Employee User " + this.getName() + " Accepted offer ID: " + c);
 		
 
 		
@@ -128,15 +128,13 @@ public class Employee extends User {
 	}
 	
 	
-	private void RejectOffer() {
-		listCars();
+	private void RejectOffer() {//tested
+		System.out.println(Driver.cfm.sysoutOfferList());
 		System.out.println("Select an Offer by Number");
 		int i = Driver.input.nextInt();
-		//User Offereee = Driver.cfm.readCarList().get(i-1).getOfferUser(j-1);
+
 		
-		Driver.cfm.RejectOffer(i);
-	
-		Driver.log.info("Employee User " + this.getName() + " Accepted offer ID: " + i);
+		RejectOfferTest(i);
 //		
 //		String username = Driver.input.next();
 //		
@@ -144,9 +142,16 @@ public class Employee extends User {
 		
 		
 	}
+	
+	
+	public void RejectOfferTest(int i) {//testedByTester
+		Driver.cfm.RejectOffer(i);
+		
+		Driver.log.info("Employee User " + this.getName() + " Accepted offer ID: " + i);
+	}
 
 
-	private void AddCarToLot(){
+	private void AddCarToLot(){//tested by tester 
 		
 		System.out.println("Enter Make: ");
 		String make = Driver.input.next();
@@ -163,14 +168,18 @@ public class Employee extends User {
 		
 		
 		
-		Driver.cfm.CreateNewCar(new Car(make, model, year, color, listPrice));
+		AddCarToLotTester(new Car(make, model, year, color, listPrice));
 		
 		
 		
 	}
 	
+	public void AddCarToLotTester(Car carIN) {//tested
+		Driver.cfm.CreateNewCar(carIN);
+	}
 	
-	private void RemoveCar() {
+	
+	private void RemoveCar() {//testedbyTest
 		listCars();
 		System.out.println("Select a Car by Number");
 		int i = Driver.input.nextInt();
@@ -181,7 +190,7 @@ public class Employee extends User {
 	}
 	
 	
-	public void RemoveCarTest(int i) {
+	public void RemoveCarTest(int i) {//tested
 //		
 	
 		Driver.cfm.removeCar(i);
@@ -189,16 +198,26 @@ public class Employee extends User {
 	}
 	
 	
-	private void listCars() {
-		Driver.cfm.sysoutCarList();
+	private void listCars() {//tested by Test
+		System.out.println(listCarsTest());
+	}
+	
+	public String listCarsTest() {//tested
+		return Driver.cfm.sysoutCarList();
 	}
 	
 	
-	private void listOffers() {
-		Driver.cfm.sysoutOfferList();
+	
+	private void listOffers() {//tested by Test
+		System.out.println(listOffersTest());
 	}
 
-	public void AddCarToLotTest(Car carToAdd) {
+	public String listOffersTest() {//tested
+		return Driver.cfm.sysoutOfferList();
+	}
+	
+	
+	public void AddCarToLotTest(Car carToAdd) {//tested
 		Driver.cfm.CreateNewCar(carToAdd);
 
 		Driver.log.info("Employee User " + this.getName() + " added " + carToAdd + " to the lot.");

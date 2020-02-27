@@ -24,8 +24,13 @@ public class Driver {
 	public static void main(String[] args) {
 		
 
+	
+//		 cfm.SHOWTIME();//sets up a list of pre-existing cars and users. (For normas Use, comment out);
+//		 System.out.println("Show Time!\n");
+//		
+
 		
-		
+		System.out.println("\n\n\nWelcome to the New Revature Car Leasing Program!\n\n");
 		
 		
 		System.out.println("Enter Username: ");

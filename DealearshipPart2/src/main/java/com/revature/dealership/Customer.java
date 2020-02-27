@@ -37,7 +37,7 @@ public class Customer extends User {
 	
 
 	@Override
-	public boolean PromptUser() {
+	public boolean PromptUser() {//not tested
 		
 		System.out.println("\n\nWhat would you like to do?");
 		System.out.println("1. Make an Offer?");
@@ -116,7 +116,7 @@ public class Customer extends User {
 
 	}
 
-	private void MakeOffer() {
+	private void MakeOffer() {//tested
 		// TODO Auto-generated method stub
 		listCars();
 		System.out.println("Choose Car By Number: ");
@@ -132,7 +132,7 @@ public class Customer extends User {
 	}
 	
 	
-	public void MakeOfferTest(int i, double amountOfOffer) {
+	public void MakeOfferTest(int i, double amountOfOffer) {//tested
 
 		
 		if(Driver.cfm.AddOffer(i, amountOfOffer, this.getName())) {
@@ -150,16 +150,16 @@ public class Customer extends User {
 //		return listCars();
 //	}
 	
-	private String listCarsTest() {
+	public String listCarsTest() {//tested
 		return Driver.cfm.sysoutCarListAvalible();
 	}
 	
-	private void listCars() {
+	private void listCars() {//tested
 		System.out.println(listCarsTest());
 	}
 
 
-	public void listMyCars() {
+	public void listMyCars() {///tested
 		
 
 		System.out.println("You own the following: \n " + listMyCarTest());
